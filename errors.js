@@ -7,7 +7,6 @@ exports.handleCustomErrors = (err, req, res, next) => {
 }
 
 exports.handlePsqlErrors = (err, req, res, next) => {
-    console.log(err)
     if (err.code === "22P02") { // invalid text representation
         res.status(400).send({ msg: "Bad request" });
     }

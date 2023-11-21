@@ -84,5 +84,70 @@ describe('/api/articles', () => {
                 expect(body.msg).toBe('Article does not exist');
               });
         });
+
+        describe('/api/articles/:article_id/comments', () => {
+            test('GET:200 sends an array of comment objects to the client', () => {
+                return request(app)
+                .get('/api/articles/5/comments')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.comments.length).toBe(2);
+                    expect(body.comments).toEqual([
+                        {
+                            comment_id: 15,
+                            body: "I am 100% sure that we're not completely sure.",
+                            article_id: 5,
+                            author: 'butter_bridge',
+                            votes: 1,
+                            created_at: '2020-11-24T00:08:00.000Z'
+                          },
+                          {
+                            comment_id: 14,
+                            body: 'What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.',
+                            article_id: 5,
+                            author: 'icellusedkars',
+                            votes: 16,
+                            created_at: '2020-06-09T05:00:00.000Z'
+                          }
+                    ])
+                })
+            })
+
+            test('GET:200 sends an array which are sorted by date posted in descending order', () => {
+                return request(app)
+                .get('/api/articles/1/comments')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.comments).toBeSortedBy('created_at', {descending: true})
+                })
+            })
+
+            test('GET:200 sends an empty array when given an existing article_id but there are no comments', () => {
+                return request(app)
+                .get('/api/articles/2/comments')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.comments).toEqual([]);
+                })
+            })
+
+            test('GET:400 sends an appropriate status and error message when given an invalid article_id', () => {
+                return request(app)
+                  .get('/api/articles/banana/comments')
+                  .expect(400)
+                  .then(({ body }) => {
+                    expect(body.msg).toBe('Bad request');
+                  });
+            });
+    
+            test('GET:404 sends an appropriate status and error message when given a non-existent article_id', () => {
+                return request(app)
+                  .get('/api/articles/88999/comments')
+                  .expect(404)
+                  .then(({ body }) => {
+                    expect(body.msg).toBe('Article does not exist');
+                  });
+            });
+        })
     })
 })

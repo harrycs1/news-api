@@ -19,6 +19,16 @@ exports.checkArticleExists = (article_id) => {
     })
 }
 
+exports.checkUserExists = (username) => {
+    return db
+    .query(`SELECT * FROM users WHERE username = $1`, [username])
+    .then(({ rows }) => {
+        if (!rows.length) {
+            return Promise.reject({status: 404, msg: "User does not exist"})
+        }
+    })
+}
+
 exports.insertComment = (newComment, article_id) => {
     const { username, body } = newComment;
     const queryValues = [username, body, article_id]

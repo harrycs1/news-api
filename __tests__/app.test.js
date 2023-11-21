@@ -169,7 +169,7 @@ describe('/api/articles', () => {
                         created_at: expect.any(String)
                       })
                 })
-            })
+            });
 
             test('POST:400 responds with an appropriate status and error message when provided with a bad comment (no body)', () => {
                 const newComment = {
@@ -183,7 +183,52 @@ describe('/api/articles', () => {
                 .then((response) => {
                     expect(response.body.msg).toBe("Bad request")
                 })
-            })
+            });
+
+            test('POST:400 sends an appropriate status and error message when given an invalid article_id', () => {
+                const newComment = {
+                    username: "rogersop",
+                    body: "Hello, I am a comment!"
+                };
+
+                return request(app)
+                  .post('/api/articles/banana/comments')
+                  .send(newComment)
+                  .expect(400)
+                  .then(({ body }) => {
+                    expect(body.msg).toBe('Bad request');
+                  });
+            });
+
+            test('POST:404 sends an appropriate status and error message when given an non-existent article_id', () => {
+                const newComment = {
+                    username: "rogersop",
+                    body: "Hello, I am a comment!"
+                };
+
+                return request(app)
+                  .post('/api/articles/99988/comments')
+                  .send(newComment)
+                  .expect(404)
+                  .then(({ body }) => {
+                    expect(body.msg).toBe('Article does not exist');
+                  });
+            });
+
+            test('POST:404 sends an appropriate status and error message when given an non-existent username', () => {
+                const newComment = {
+                    username: "harry",
+                    body: "Hello, I am a comment!"
+                };
+
+                return request(app)
+                  .post('/api/articles/3/comments')
+                  .send(newComment)
+                  .expect(404)
+                  .then(({ body }) => {
+                    expect(body.msg).toBe('User does not exist');
+                  });
+            });
         })
     })
 })

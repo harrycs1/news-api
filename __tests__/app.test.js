@@ -85,19 +85,33 @@ describe('/api/articles', () => {
               });
         });
 
-        // test('PATCH:200 updates an article given an article_id', () => {
-        //     const newVotes = {
-        //         inc_votes: 1
-        //     }
+        test('PATCH:200 updates an article.votes by 1 given an article_id', () => {
+            const newVotes = {
+                inc_votes: 1
+            }
             
-        //     return request(app)
-        //     .patch('api/articles/1')
-        //     .send(newVotes)
-        //     .expect(200)
-        //     .then(({ body }) => {
-        //         expect(body.article.votes).toBe(1)
-        //     })
-        // })
+            return request(app)
+            .patch('/api/articles/3')
+            .send(newVotes)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article.votes).toBe(1)
+            })
+        })
+
+        test('PATCH:200 updates an article.votes by 5 given an article_id', () => {
+            const newVotes = {
+                inc_votes: 5
+            }
+            
+            return request(app)
+            .patch('/api/articles/3')
+            .send(newVotes)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article.votes).toBe(5)
+            })
+        })
 
         describe('/api/articles/:article_id/comments', () => {
             test('GET:200 sends an array of comment objects to the client', () => {

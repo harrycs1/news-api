@@ -17,3 +17,18 @@ exports.checkArticleExists = (article_id) => {
         }
     })
 }
+
+exports.amendArticleVotes = (inc_votes, article_id) => {
+    const queryStr = `UPDATE articles
+                    SET
+                        votes = votes + $1
+                    WHERE
+                        article_id = $2
+                    RETURNING *`
+    
+    return db
+    .query(queryStr, [inc_votes, article_id])
+    .then(({ rows }) => {
+        return rows[0]
+    })
+}

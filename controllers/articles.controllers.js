@@ -1,4 +1,5 @@
-const { selectArticle } = require('../models/articles.models')
+const { selectArticle } = require('../models/articles.models');
+const { amendArticleVotes } = require('../models/comments.models');
 
 exports.getArticle = (req, res, next) => {
     const { article_id } = req.params;
@@ -9,4 +10,14 @@ exports.getArticle = (req, res, next) => {
     .catch((err) => {
         next(err)
     })
+}
+
+exports.patchArticleVotes = (req, res, next) => {
+    const { inc_votes } = req.body
+    const { article_id } = req.params
+    amendArticleVotes(inc_votes, article_id)
+    .then((amendedArticle) => {
+        res.status(200).send({ article: amendedArticle })
+    })
+    .catch(next)
 }

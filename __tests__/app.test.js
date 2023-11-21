@@ -3,6 +3,7 @@ const request = require('supertest');
 const testData = require('../db/data/test-data/index');
 const db = require('../db/connection');
 const app = require('../app');
+const endpoints = require('../endpoints.json');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -41,14 +42,7 @@ describe('/api', () => {
         .get('/api')
         .expect(200)
         .then(({ body }) => {
-            for (let endpoint in body) {
-                expect(body[endpoint]).toMatchObject({
-                    description: expect.any(String),
-                    queries: expect.any(Object),
-                    requestFormat: expect.any(Object),
-                    exampleResponse: expect.any(Object)
-                })
-            }
+            expect(body).toEqual(endpoints)
         })
     })
 })

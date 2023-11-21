@@ -148,6 +148,42 @@ describe('/api/articles', () => {
                     expect(body.msg).toBe('Article does not exist');
                   });
             });
+
+            test('POST:201 inserts a new comment into the db and sends the new comment to the client', () => {
+                const newComment = {
+                    username: "rogersop",
+                    body: "Hello, I am a comment!"
+                };
+
+                return request(app)
+                .post('/api/articles/3/comments')
+                .send(newComment)
+                .expect(201)
+                .then(({ body }) => {
+                    expect(body.comment).toMatchObject({
+                        comment_id: 19,
+                        body: "Hello, I am a comment!",
+                        article_id: 3,
+                        author: 'rogersop',
+                        votes: 0,
+                        created_at: expect.any(String)
+                      })
+                })
+            })
+
+            test('POST:400 responds with an appropriate status and error message when provided with a bad comment (no body)', () => {
+                const newComment = {
+                    username: "rogersop"
+                }
+
+                return request(app)
+                .post('/api/articles/3/comments')
+                .send(newComment)
+                .expect(400)
+                .then((response) => {
+                    expect(response.body.msg).toBe("Bad request")
+                })
+            })
         })
     })
 })

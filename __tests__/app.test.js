@@ -310,6 +310,7 @@ describe('/api/users', () => {
         .get('/api/users')
         .expect(200)
         .then(({ body }) => {
+            expect(body.users.length).toBe(4)
             body.users.forEach((user) => {
                 expect(user).toMatchObject({
                     username: expect.any(String),

@@ -49,5 +49,92 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves all comments for the given article_id in descending order from date posted",
+    "queries": [],
+    "requestFormat": {},
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 15,
+          "body": "I am 100% sure that we're not completely sure.",
+          "article_id": 5,
+          "author": "butter_bridge",
+          "votes": 1,
+          "created_at": "2020-11-24T00:08:00.000Z"
+        },
+        {
+          "comment_id": 14,
+          "body": "What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.",
+          "article_id": 5,
+          "author": "icellusedkars",
+          "votes": 16,
+          "created_at": "2020-06-09T05:00:00.000Z"
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "add a new comment to an article",
+    "queries": [],
+    "requestFormat": {
+      "username": "rogersop",
+      "body": "Hello, I am a comment!"
+    },
+    "exampleResponse": {
+      "comments": {
+        "comment_id": 19,
+        "body": "Hello, I am a comment!",
+        "article_id": 3,
+        "author": "rogersop",
+        "votes": 0,
+        "created_at": "2020-06-09T05:00:00.000Z"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "update an article",
+    "queries": [],
+    "requestFormat": {
+      "votes": 1
+    },
+    "exampleResponse": {
+      "article": {
+        "article_id": 3,
+        "title": "Eight pug gifs that remind me of mitch",
+        "topic": "mitch",
+        "author": "icellusedkars",
+        "body": "some gifs",
+        "created_at": "2020-11-03T09:12:00.000Z",
+        "votes": 1,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "delete a comment",
+    "queries": [],
+    "requestFormat": {},
+    "exampleResponse": {}
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "requestFormat": {},
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        },
+        {
+          "username": "icellusedkars",
+          "name": "sam",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        }
+      ]
+    }
   }
 }

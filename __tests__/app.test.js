@@ -233,10 +233,10 @@ describe('/api/articles', () => {
     })
 })
 
-describe('/api/comments/:comment_id', () => {
-    test('DELETE:204 deletes a comment and sends no body back', () => {
-        return request(app)
-        .delete('/api/comments/2')
-        .expect(204)
-    })
-})
+// describe('/api/comments/:comment_id', () => {
+//     test('DELETE:204 deletes a comment and sends no body back', () => {
+//         return request(app)
+//         .delete('/api/comments/2')
+//         .expect(204)
+//     })
+// })

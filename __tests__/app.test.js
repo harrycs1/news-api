@@ -141,6 +141,21 @@ describe('/api/articles', () => {
               });
         });
 
+        test('PATCH:400 sends an appropriate status and error message when given an incomplete body', () => {
+            const newVotes = {
+                inc_votes: "banana"
+            }
+            
+            return request(app)
+              .patch('/api/articles/2')
+              .send(newVotes)
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.msg).toBe('Bad request');
+              });
+        });
+
+
         describe('/api/articles/:article_id/comments', () => {
             test('GET:200 sends an array of comment objects to the client', () => {
                 return request(app)

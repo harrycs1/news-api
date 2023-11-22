@@ -1,9 +1,9 @@
 const express = require('express');
 const { handleCustomErrors, handlePsqlErrors } = require('./errors');
 const { getTopics } = require('./controllers/topics.controllers');
+const { getArticleById, getArticles } = require('./controllers/articles.controllers');
 const { getArticle, patchArticleVotes } = require('./controllers/articles.controllers');
 const { getEndpoints } = require('./controllers/endpoints.controllers');
-const { getCommentsByArticleId, postComment } = require('./controllers/comments.controllers');
 const { getUsers } = require('./controllers/users.controllers');
 const { getCommentsByArticleId, postComment, deleteComment } = require('./controllers/comments.controllers')
 
@@ -12,7 +12,8 @@ app.use(express.json());
 
 app.get('/api/topics', getTopics);
 
-app.get('/api/articles/:article_id', getArticle);
+app.get('/api/articles', getArticles)
+app.get('/api/articles/:article_id', getArticleById);
 
 app.patch('/api/articles/:article_id', patchArticleVotes)
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId);

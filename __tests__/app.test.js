@@ -113,6 +113,34 @@ describe('/api/articles', () => {
             })
         })
 
+        test('PATCH:400 sends an appropriate status and error message when given an invalid article_id', () => {
+            const newVotes = {
+                inc_votes: 5
+            }
+
+            return request(app)
+              .patch('/api/articles/banana')
+              .send(newVotes)
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.msg).toBe('Bad request');
+              });
+        });
+
+        test('PATCH:404 sends an appropriate status and error message when given a non-existent article_id', () => {
+            const newVotes = {
+                inc_votes: 5
+            }
+            
+            return request(app)
+              .patch('/api/articles/88999')
+              .send(newVotes)
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.msg).toBe('Article does not exist');
+              });
+        });
+
         describe('/api/articles/:article_id/comments', () => {
             test('GET:200 sends an array of comment objects to the client', () => {
                 return request(app)

@@ -303,3 +303,29 @@ describe('/api/articles', () => {
         })
     })
 })
+
+describe('/api/comments/:comment_id', () => {
+    test('DELETE:204 deletes a comment and sends no body back', () => {
+        return request(app)
+        .delete('/api/comments/2')
+        .expect(204)
+    });
+
+    test('POST:400 sends an appropriate status and error message when given an invalid comment_id', () => {
+        return request(app)
+          .delete('/api/comments/banana')
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad request');
+          });
+    });
+
+    test('POST:404 sends an appropriate status and error message when given an non-existent comment_id', () => {
+        return request(app)
+          .delete('/api/comments/99988')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Comment does not exist');
+          });
+    });
+})

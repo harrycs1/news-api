@@ -3,7 +3,6 @@ const { handleCustomErrors, handlePsqlErrors } = require('./errors');
 const { getTopics } = require('./controllers/topics.controllers');
 const { getArticle, patchArticleVotes } = require('./controllers/articles.controllers');
 const { getEndpoints } = require('./controllers/endpoints.controllers');
-const { getCommentsByArticleId, postComment } = require('./controllers/comments.controllers');
 const { getUsers } = require('./controllers/users.controllers');
 const { getCommentsByArticleId, postComment, deleteComment } = require('./controllers/comments.controllers')
 

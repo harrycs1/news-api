@@ -74,5 +74,23 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "add a new comment to an article",
+    "queries": [],
+    "requestFormat": {
+      "username": "rogersop",
+      "body": "Hello, I am a comment!"
+    },
+    "exampleResponse": {
+      "comments": {
+        "comment_id": 19,
+        "body": "Hello, I am a comment!",
+        "article_id": 3,
+        "author": "rogersop",
+        "votes": 0,
+        "created_at": "2020-06-09T05:00:00.000Z"
+      }
+    }
   }
 }

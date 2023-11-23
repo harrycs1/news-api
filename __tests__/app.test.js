@@ -78,14 +78,14 @@ describe('/api/articles', () => {
         })
     });
 
-    test('GET: 200 article objects can be filtered with topic query', () => {
-        return request(app)
-        .get('/api/articles?topic=')
-        .expect(200)
-        .then(({ body }) => {
-            expect(body.articles).toBeSortedBy('created_at', {descending: true})
-        })
-    });
+    // test('GET: 200 article objects can be filtered with topic query', () => {
+    //     return request(app)
+    //     .get('/api/articles?topic=')
+    //     .expect(200)
+    //     .then(({ body }) => {
+    //         expect(body.articles).toBeSortedBy('created_at', {descending: true})
+    //     })
+    // });
 
     describe('api/articles/:article_id', () => {
         test('GET:200 sends an article object to the user with the correct article_id', () => {

@@ -1,7 +1,9 @@
 # Northcoders News API 
 
 ## Summary
-The aim of this project was to mimic the backend service of an online news provider. The app serves news articles and user comments to the client. 
+The aim of this project was to mimic the backend service of an online news provider. The app serves news articles and user comments to the client.
+
+**[Here's a link to the hosted application!](https://news-api-ndji.onrender.com)**
 
 ## How to Clone
 Clone the repository using `git clone https://github.com/harrycs1/news-api`. The MVC framework has been used. Controllers and models are found in their respective folders.
@@ -17,12 +19,10 @@ To seed the development database with preliminary data, a script has been writte
 ## How to Test
 A test script has been setup in `package.json` that will seed the test data and run the test files. To execute the script, use the `npm test` command. Tests for the app and utility functions are found in the `__tests__` folder.
 
-## How to Host
-
 ## Requirements and Dependencies
-Node postgres is used to interact with a PSQL database.
+Node postgres (v21.1.0) is used to interact with a PSQL (v16.0) database.
 
-**Install the following dependencies with the `npm install` command from inside the app directory:**
+**Running the `npm install` command from inside the app directory will install the following dependencies:**
 - dotenv ^16.0.0 
 - express ^4.18.2 
 - pg ^8.7.3 

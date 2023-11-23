@@ -96,7 +96,7 @@ describe('/api/articles', () => {
         })
     });
 
-    test('GET:400 responds with an appropriate error if the topic query does not exist', () => {
+    test('GET:404 responds with an appropriate error if the topic query does not exist', () => {
         return request(app)
           .get('/api/articles?topic=banana')
           .expect(404)
@@ -105,12 +105,12 @@ describe('/api/articles', () => {
           });
       });
 
-      test('GET:404 responds with an appropriate error if the topic query exists but has no articles', () => {
+      test('GET:200 responds with an appropriate message if the topic query exists but has no articles', () => {
         return request(app)
           .get('/api/articles?topic=paper')
-          .expect(404)
+          .expect(200)
           .then(({ body }) => {
-            expect(body.msg).toBe("No results found");
+            expect(body.articles[0]).toBe("No results found");
           });
       });
 

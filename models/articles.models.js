@@ -43,10 +43,9 @@ exports.selectArticles = (topic) => {
 
     return db.query(queryStr, queryValues)
     .then(({ rows }) => {
-        if (!rows.length) {
-            return Promise.reject({status: 404, msg: "No results found"})
-        }
-
+        // if (!rows.length) {
+        //     return Promise.reject({status: 200, msg: "No results found"})
+        // }
         return rows
     })
 }

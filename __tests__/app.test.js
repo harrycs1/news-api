@@ -78,14 +78,41 @@ describe('/api/articles', () => {
         })
     });
 
-    // test('GET: 200 article objects can be filtered with topic query', () => {
-    //     return request(app)
-    //     .get('/api/articles?topic=')
-    //     .expect(200)
-    //     .then(({ body }) => {
-    //         expect(body.articles).toBeSortedBy('created_at', {descending: true})
-    //     })
-    // });
+    test('GET: 200 article objects can be filtered with topic query', () => {
+        return request(app)
+        .get('/api/articles?topic=cats')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toEqual([{
+                article_id: 5,
+                author: 'rogersop',
+                title: 'UNCOVERED: catspiracy to bring down democracy',
+                topic: 'cats',
+                created_at: '2020-08-03T13:14:00.000Z',
+                votes: 0,
+                article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                comment_count: '2'
+              }])
+        })
+    });
+
+    test('GET:404 responds with an appropriate error if the topic query does not exist', () => {
+        return request(app)
+          .get('/api/articles?topic=banana')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Topic does not exist");
+          });
+      });
+
+      test('GET:200 responds with an appropriate message if the topic query exists but has no articles', () => {
+        return request(app)
+          .get('/api/articles?topic=paper')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).toEqual([]);
+          });
+      });
 
     describe('api/articles/:article_id', () => {
         test('GET:200 sends an article object to the user with the correct article_id', () => {

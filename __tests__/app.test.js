@@ -69,7 +69,7 @@ describe('/api/articles', () => {
         })
     });
 
-    test('GET: 200 article objects are sorted by date in descending order', () => {
+    test('GET:200 article objects are sorted by date in descending order', () => {
         return request(app)
         .get('/api/articles')
         .expect(200)
@@ -78,7 +78,7 @@ describe('/api/articles', () => {
         })
     });
 
-    test('GET: 200 article objects can be filtered with topic query', () => {
+    test('GET:200 article objects can be filtered with topic query', () => {
         return request(app)
         .get('/api/articles?topic=cats')
         .expect(200)
@@ -103,14 +103,106 @@ describe('/api/articles', () => {
           .then(({ body }) => {
             expect(body.msg).toBe("Topic does not exist");
           });
-      });
+    });
 
-      test('GET:200 responds with an appropriate message if the topic query exists but has no articles', () => {
+    test('GET:200 responds with an appropriate message if the topic query exists but has no articles', () => {
         return request(app)
           .get('/api/articles?topic=paper')
           .expect(200)
           .then(({ body }) => {
             expect(body.articles).toEqual([]);
+          });
+    });
+
+    describe('articles can be sorted by any valid column using the sort_by query', () => {
+        test('GET:200 articles can be sorted by title using the sort_by query', () => {
+            return request(app)
+            .get('/api/articles?sort_by=title')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy('title', {descending: true})
+            })
+        });
+
+        test('GET:200 articles can be sorted by article_id using the sort_by query', () => {
+            return request(app)
+            .get('/api/articles?sort_by=article_id')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy('article_id', {descending: true})
+            })
+        });
+
+        test('GET:200 articles can be sorted by author using the sort_by query', () => {
+            return request(app)
+            .get('/api/articles?sort_by=author')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy('author', {descending: true})
+            })
+        });
+
+        test('GET:200 articles can be sorted by topic using the sort_by query', () => {
+            return request(app)
+            .get('/api/articles?sort_by=topic')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy('topic', {descending: true})
+            })
+        });
+
+        test('GET:200 articles can be sorted by votes using the sort_by query', () => {
+            return request(app)
+            .get('/api/articles?sort_by=votes')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy('votes', {descending: true})
+            })
+        });
+    });
+
+    test('GET:200 articles can be sorted in ascending order with the order query', () => {
+        return request(app)
+        .get('/api/articles?order=asc')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy('created_at', {ascending: true})
+        })
+    });
+
+    test('GET:200 articles can be sorted in descending order with the order query', () => {
+        return request(app)
+        .get('/api/articles?order=desc')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy('created_at', {descending: true})
+        })
+    });
+
+    test('GET:200 accepts a combination of queries', () => {
+        return request(app)
+        .get('/api/articles?order=asc&sort_by=title')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy('title', {ascending: true})
+        })
+    });
+
+    test('GET:400 responds with an error if the sort_by query is invalid', () => {
+        return request(app)
+          .get('/api/articles?sort_by=banana')
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe("Invalid sort query");
+          });
+    });
+
+    test('GET:400 responds with an error if the order query is invalid', () => {
+        return request(app)
+          .get('/api/articles?order=banana')
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe("Invalid order query");
           });
       });
 

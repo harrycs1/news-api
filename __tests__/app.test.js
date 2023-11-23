@@ -49,7 +49,7 @@ describe('/api', () => {
 
 describe('/api/articles', () => {
     describe('api/articles/:article_id', () => {
-        test.only('GET:200 sends an article object to the user with the correct article_id', () => {
+        test('GET:200 sends an article object to the user with the correct article_id', () => {
             return request(app)
             .get('/api/articles/2')
             .expect(200)
@@ -64,6 +64,25 @@ describe('/api/articles', () => {
                     votes: 0,
                     article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
                     comment_count: "0"
+                })
+            })
+        });
+
+        test('GET:200 sends an article object to the user with the correct article_id and sums comment_count', () => {
+            return request(app)
+            .get('/api/articles/1')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article).toMatchObject({
+                    article_id: 1,
+                    title: "Living in the shadow of a great man",
+                    topic: "mitch",
+                    author: "butter_bridge",
+                    body: "I find this existence challenging",
+                    created_at: "2020-07-09T20:11:00.000Z",
+                    votes: 100,
+                    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                    comment_count: "11"
                 })
             })
         })

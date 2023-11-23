@@ -48,7 +48,7 @@ describe('/api', () => {
 })
 
 describe('/api/articles', () => {
-    xtest('GET:200 sends an array of article objects to the client', () => {
+    test('GET:200 sends an array of article objects to the client', () => {
         return request(app)
         .get('/api/articles')
         .expect(200)
@@ -69,7 +69,7 @@ describe('/api/articles', () => {
         })
     });
 
-    xtest('GET: 200 article objects are sorted by date in descending order', () => {
+    test('GET: 200 article objects are sorted by date in descending order', () => {
         return request(app)
         .get('/api/articles')
         .expect(200)
@@ -77,15 +77,6 @@ describe('/api/articles', () => {
             expect(body.articles).toBeSortedBy('created_at', {descending: true})
         })
     });
-
-    // test('GET: 200 article objects can be filtered with topic query', () => {
-    //     return request(app)
-    //     .get('/api/articles?topic=')
-    //     .expect(200)
-    //     .then(({ body }) => {
-    //         expect(body.articles).toBeSortedBy('created_at', {descending: true})
-    //     })
-    // });
 
     describe('api/articles/:article_id', () => {
         test('GET:200 sends an article object to the user with the correct article_id', () => {

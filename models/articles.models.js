@@ -1,11 +1,16 @@
 const db = require('../db/connection');
 
 exports.selectArticleById = (article_id) => {
-    const queryStr =    `SELECT articles.article_id, articles.author, articles.body, articles.title, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) as comment_count
-                        FROM articles LEFT JOIN comments
-                        ON articles.article_id = comments.article_id
-                        WHERE articles.article_id = $1
-                        GROUP BY articles.article_id`;
+    const queryStr =    `SELECT 
+                            articles.article_id, articles.author, articles.body, articles.title, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) as comment_count
+                        FROM 
+                            articles LEFT JOIN comments
+                        ON 
+                            articles.article_id = comments.article_id
+                        WHERE 
+                            articles.article_id = $1
+                        GROUP BY 
+                            articles.article_id`;
 
     return db.query(queryStr, [article_id])
     .then(({ rows }) => {
@@ -17,14 +22,31 @@ exports.selectArticleById = (article_id) => {
     })
 }
 
-exports.selectArticles = () => {
-    const queryStr =    `SELECT articles.article_id, articles.author, title, topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comment_count
-                        FROM articles JOIN comments
-                        ON articles.article_id = comments.article_id
-                        GROUP BY articles.article_id
-                        ORDER BY articles.created_at DESC`
-    return db.query(queryStr)
+exports.selectArticles = (topic) => {
+    let queryStr =    `SELECT 
+                            articles.article_id, articles.author, title, articles.topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comment_count
+                        FROM 
+                            articles JOIN comments
+                        ON 
+                            articles.article_id = comments.article_id`
+
+    const queryValues = [];
+
+    if (topic) {
+        queryValues.push(topic);
+        queryStr += ` WHERE articles.topic = $1`
+    }
+
+    queryStr +=` GROUP BY articles.article_id 
+                ORDER BY articles.created_at DESC`;
+
+
+    return db.query(queryStr, queryValues)
     .then(({ rows }) => {
+        if (!rows.length) {
+            return Promise.reject({status: 404, msg: "No results found"})
+        }
+
         return rows
     })
 }

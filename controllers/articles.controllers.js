@@ -23,7 +23,6 @@ exports.getArticles = (req, res, next) => {
     Promise.all(articlePromises)
     .then((resolvedPromises) => {
         const articles = resolvedPromises[0];
-        if (!articles.length) { articles[0] = "No results found" }
         res.status(200).send({ articles })
     })
     .catch(next)

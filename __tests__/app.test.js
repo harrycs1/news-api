@@ -110,7 +110,7 @@ describe('/api/articles', () => {
           .get('/api/articles?topic=paper')
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles[0]).toBe("No results found");
+            expect(body.articles).toEqual([]);
           });
       });
 

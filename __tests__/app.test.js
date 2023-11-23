@@ -67,7 +67,7 @@ describe('/api/articles', () => {
                 })
             })
         })
-    })
+    });
 
     test('GET: 200 article objects are sorted by date in descending order', () => {
         return request(app)
@@ -76,9 +76,7 @@ describe('/api/articles', () => {
         .then(({ body }) => {
             expect(body.articles).toBeSortedBy('created_at', {descending: true})
         })
-    })
-
-
+    });
 
     describe('api/articles/:article_id', () => {
         test('GET:200 sends an article object to the user with the correct article_id', () => {

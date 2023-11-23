@@ -1,5 +1,5 @@
-const { selectCommentsByArticleId, insertComment, checkUserExists, checkCommentExists, removeComment } = require("../models/comments.models");
-const { checkArticleExists } = require('../models/articles.models');
+const { checkArticleExists } = require("../models/articles.models");
+const { selectCommentsByArticleId, insertComment, checkUserExists, checkCommentExists, removeComment, amendComment } = require("../models/comments.models");
 
 exports.getCommentsByArticleId = (req, res, next) => {
     const { article_id } = req.params;
@@ -33,6 +33,20 @@ exports.deleteComment = (req, res, next) => {
     Promise.all(commentPromises)
     .then(() => {
         res.status(204).send()
+    })
+    .catch(next)
+}
+
+exports.patchComment = (req, res, next) => {
+    const { comment_id } = req.params;
+    const { inc_votes } = req.body;
+
+    const commentPromises = [checkCommentExists(comment_id), amendComment(comment_id, inc_votes)]
+
+    Promise.all(commentPromises)
+    .then((resolvedPromises) => {
+        const amendedComment = resolvedPromises[1]
+        res.status(200).send({ comment: amendedComment})
     })
     .catch(next)
 }

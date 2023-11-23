@@ -530,7 +530,7 @@ describe('/api/comments/:comment_id', () => {
         .expect(204)
     });
 
-    test('POST:400 sends an appropriate status and error message when given an invalid comment_id', () => {
+    test('DELETE:400 sends an appropriate status and error message when given an invalid comment_id', () => {
         return request(app)
           .delete('/api/comments/banana')
           .expect(400)
@@ -539,12 +539,94 @@ describe('/api/comments/:comment_id', () => {
           });
     });
 
-    test('POST:404 sends an appropriate status and error message when given an non-existent comment_id', () => {
+    test('DELETE:404 sends an appropriate status and error message when given an non-existent comment_id', () => {
         return request(app)
           .delete('/api/comments/99988')
           .expect(404)
           .then(({ body }) => {
             expect(body.msg).toBe('Comment does not exist');
+          });
+    });
+
+    test('PATCH:200 increases the comment votes given a comment_id', () =>{
+        const inc_votes = {
+            inc_votes: 1
+        }
+        
+        return request(app)
+        .patch('/api/comments/2')
+        .send(inc_votes)
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.comment).toEqual({
+                comment_id: 2,
+                body: 'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
+                article_id: 1,
+                author: 'butter_bridge',
+                votes: 15,
+                created_at: '2020-10-31T03:03:00.000Z'
+              })
+        })
+    });
+
+    test('PATCH:200 decreases the comment votes given a comment_id', () =>{
+        const inc_votes = {
+            inc_votes: -1
+        }
+        
+        return request(app)
+        .patch('/api/comments/2')
+        .send(inc_votes)
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.comment).toEqual({
+                comment_id: 2,
+                body: 'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
+                article_id: 1,
+                author: 'butter_bridge',
+                votes: 13,
+                created_at: '2020-10-31T03:03:00.000Z'
+              })
+        })
+    });
+
+    test('PATCH:400 sends an appropriate status and error message when given an invalid comment_id', () => {
+        const inc_votes = {
+            inc_votes: 1
+        }
+
+        return request(app)
+          .patch('/api/comments/banana')
+          .send(inc_votes)
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad request');
+          });
+    });
+
+    test('PATCH:404 sends an appropriate status and error message when given a non-existent comment_id', () => {
+        const inc_votes = {
+            inc_votes: 1
+        }
+        
+        return request(app)
+          .patch('/api/comments/88999')
+          .send(inc_votes)
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Comment does not exist');
+          });
+    });
+
+    test('PATCH:400 sends an appropriate status and error message when given an incomplete body', () => {
+        const inc_votes = {}
+        
+        return request(app)
+          .patch('/api/comments/2')
+          .send(inc_votes)
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad request');
           });
     });
 })

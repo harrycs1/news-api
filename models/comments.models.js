@@ -50,3 +50,18 @@ exports.removeComment = (comment_id) => {
     const queryStr = `DELETE FROM comments WHERE comment_id = $1`
     return db.query(queryStr, [comment_id])
 }
+
+exports.amendComment = (comment_id, inc_votes) => {
+    const queryStr =    `UPDATE comments
+                        SET
+                            votes = votes + $1
+                        WHERE
+                            comment_id = $2
+                        RETURNING *`
+
+    return db
+    .query(queryStr, [inc_votes, comment_id])
+    .then(({ rows }) => {
+    return rows[0]
+    })
+}

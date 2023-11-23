@@ -1,8 +1,7 @@
 const express = require('express');
 const { handleCustomErrors, handlePsqlErrors } = require('./errors');
 const { getTopics } = require('./controllers/topics.controllers');
-const { getArticleById, getArticles } = require('./controllers/articles.controllers');
-const { getArticle, patchArticleVotes } = require('./controllers/articles.controllers');
+const { getArticleById, getArticles, patchArticleVotes } = require('./controllers/articles.controllers');
 const { getEndpoints } = require('./controllers/endpoints.controllers');
 const { getUsers } = require('./controllers/users.controllers');
 const { getCommentsByArticleId, postComment, deleteComment } = require('./controllers/comments.controllers')

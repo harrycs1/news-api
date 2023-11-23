@@ -497,6 +497,30 @@ describe('/api/users', () => {
             })
         })
     })
+
+    describe('/api/users/:username', () => {
+        test('GET:200 sends a user object to the user with the correct username', () => {
+            return request(app)
+            .get('/api/users/butter_bridge')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.user).toEqual(  {
+                    username: 'butter_bridge',
+                    name: 'jonny',
+                    avatar_url: 'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg'
+                  })
+            })
+        });
+
+        test('GET:404 sends an appropriate status and error message when given a non-existent username', () => {
+            return request(app)
+              .get('/api/users/banana')
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.msg).toBe('Username does not exist');
+              });
+        });
+    })
 })
 
 describe('/api/comments/:comment_id', () => {

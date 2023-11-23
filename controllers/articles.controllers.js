@@ -1,6 +1,4 @@
-const { selectArticleById, selectArticles } = require('../models/articles.models')
-const { selectArticle } = require('../models/articles.models');
-const { amendArticleVotes, checkArticleExists } = require('../models/comments.models');
+const { selectArticleById, selectArticles, amendArticleVotes, checkArticleExists } = require('../models/articles.models')
 
 exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;

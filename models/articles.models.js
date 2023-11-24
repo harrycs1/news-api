@@ -142,3 +142,11 @@ exports.insertArticle = (newArticle) => {
         return rows[0]
     })
 }
+
+exports.removeArticle = (article_id) => {
+    const queryStr =    `DELETE FROM articles 
+                        WHERE article_id = $1
+                        RETURNING *`
+    return db
+    .query(queryStr, [article_id])
+}

@@ -1,4 +1,4 @@
-const { selectArticleById, selectArticles, amendArticleVotes, checkArticleExists, insertArticle } = require('../models/articles.models');
+const { selectArticleById, selectArticles, amendArticleVotes, checkArticleExists, insertArticle, removeArticle } = require('../models/articles.models');
 const { checkTopicExists } = require('../models/topics.models');
 const { selectUserByUsername, checkUsernameExists } = require('../models/users.models');
 
@@ -63,6 +63,17 @@ exports.postArticle = (req, res, next) => {
     .then((resolvedPromises) => {
         const article = resolvedPromises[2]
         res.status(201).send(article)
+    })
+    .catch(next)
+}
+
+exports.deleteArticle = (req, res, next) => {
+    const { article_id } = req.params;
+    const articlePromises = [checkArticleExists(article_id), removeArticle(article_id)]
+
+    Promise.all(articlePromises)
+    .then(() => {
+        res.status(204).send()
     })
     .catch(next)
 }

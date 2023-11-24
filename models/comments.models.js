@@ -1,21 +1,28 @@
 const db = require('../db/connection');
 
-exports.selectCommentsByArticleId = (article_id) => {
-    const queryStr = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`
+exports.selectCommentsByArticleId = (article_id, limit = 10, p) => {
+    const queryStr =    `SELECT * FROM comments 
+                        WHERE article_id = $1 
+                        ORDER BY created_at 
+                        DESC
+                        LIMIT $2
+                        OFFSET $3`
+
+    const page = (p-1) * limit || 0;
+    const queryValues = [article_id, limit, page]
+
+    if (!Number.isInteger(+limit)) {
+        return Promise.reject({status: 400, msg: "Invalid limit query"})
+    }
+
+    if (p && !Number.isInteger(+p)) {
+        return Promise.reject({status: 400, msg: "Invalid page query"})
+    }
+
     return db
-    .query(queryStr, [article_id])
+    .query(queryStr, queryValues)
     .then(({ rows }) => {
         return rows
-    })
-}
-
-exports.checkUserExists = (username) => {
-    return db
-    .query(`SELECT * FROM users WHERE username = $1`, [username])
-    .then(({ rows }) => {
-        if (!rows.length) {
-            return Promise.reject({status: 404, msg: "User does not exist"})
-        }
     })
 }
 

@@ -33,7 +33,54 @@ describe('/api/topics', () => {
                 })
             })
         })
-    })
+    });
+
+    test('POST:201 inserts a new topic into the db and sends that topic to the client', () => {
+        const newTopic = {
+            "slug" : "topic name test",
+            "description": "topic description test"
+        }
+        
+        return request(app)
+        .post('/api/topics')
+        .send(newTopic)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body).toMatchObject({
+                "slug" : "topic name test",
+                "description": "topic description test"
+            })
+        })
+    });
+
+    test('POST:400 responds with appropriate status and error if topic already exists', () => {
+        const newTopic = {
+            "slug" : "cats",
+            "description": "topic description test"
+        }
+        
+        return request(app)
+        .post('/api/topics')
+        .send(newTopic)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Topic already exists")
+        })  
+    });
+
+    test('POST:400 sends an appropriate status and error message when provided with an incomplete article (no slug)', () => {
+        const newTopic = {
+            "description" : "new topic"
+        }
+        
+        return request(app)
+        .post('/api/topics')
+        .send(newTopic)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad request")
+        })  
+    });
 })
 
 describe('/api', () => {

@@ -632,6 +632,66 @@ describe('/api/articles', () => {
                     expect(body.msg).toBe('Username does not exist');
                   });
             });
+
+            test('GET:200 limits the results when given a limit query', () => {
+                return request(app)
+                .get('/api/articles/1/comments?limit=5')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.comments.length).toBe(5);
+                })
+            });
+
+            test('GET:200 page number can be specified with a p query', () => {
+                return request(app)
+                .get('/api/articles/1/comments?limit=3&p=2')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.comments.length).toBe(3);
+                    expect(body.comments).toMatchObject([{
+                        comment_id: 13,
+                        body: 'Fruit pastilles',
+                        article_id: 1,
+                        author: 'icellusedkars',
+                        votes: 0,
+                        created_at: expect.any(String)
+                      },
+                      {
+                        comment_id: 7,
+                        body: 'Lobster pot',
+                        article_id: 1,
+                        author: 'icellusedkars',
+                        votes: 0,
+                        created_at: expect.any(String)
+                      },
+                      {
+                        comment_id: 8,
+                        body: 'Delicious crackerbreads',
+                        article_id: 1,
+                        author: 'icellusedkars',
+                        votes: 0,
+                        created_at: expect.any(String)
+                      }])
+                })
+            });
+
+            test('GET:400 responds with an error if the limit query is invalid', () => {
+                return request(app)
+                  .get('/api/articles/1/comments?limit=banana')
+                  .expect(400)
+                  .then((response) => {
+                    expect(response.body.msg).toBe("Invalid limit query");
+                  });
+            });
+
+            test('GET:400 responds with an error if the p query is invalid', () => {
+                return request(app)
+                  .get('/api/articles/1/comments?limit=3&p=banana')
+                  .expect(400)
+                  .then((response) => {
+                    expect(response.body.msg).toBe("Invalid page query");
+                  });
+            });
         })
     });
 })

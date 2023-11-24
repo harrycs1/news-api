@@ -488,6 +488,12 @@ describe('/api/articles', () => {
             })
         });
 
+        test('DELETE:204 deletes an article and sends no body back', () => {
+            return request(app)
+            .delete('/api/articles/2')
+            .expect(204)
+        });
+
         describe('/api/articles/:article_id/comments', () => {
             test('GET:200 sends an array of comment objects to the client', () => {
                 return request(app)
@@ -632,7 +638,25 @@ describe('/api/articles', () => {
                     expect(body.msg).toBe('User does not exist');
                   });
             });
-        })
+        });
+
+        test('DELETE:400 sends an appropriate status and error message when given an invalid article_id', () => {
+            return request(app)
+              .delete('/api/articles/banana')
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.msg).toBe('Bad request');
+              });
+        });
+    
+        test('DELETE:404 sends an appropriate status and error message when given an non-existent comment_id', () => {
+            return request(app)
+              .delete('/api/articles/99988')
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.msg).toBe('Article does not exist');
+              });
+        });
     });
 })
 

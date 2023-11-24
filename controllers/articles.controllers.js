@@ -14,17 +14,28 @@ exports.getArticleById = (req, res, next) => {
 }
 
 exports.getArticles = (req, res, next) => {
-    const { topic, sort_by, order } = req.query;
+    const { topic, sort_by, order, limit = 10, p } = req.query;
     const articlePromises = [selectArticles(topic, sort_by, order)]
 
     if (topic) {
         articlePromises.push(checkTopicExists(topic));
     }
 
+    if (limit && !Number.isInteger(+limit)) {
+        res.status(400).send({msg: "Invalid limit query"})
+    }
+
+    if (p && !Number.isInteger(+p)) {
+        res.status(400).send({msg: "Invalid page query"})
+    }
+
     Promise.all(articlePromises)
     .then((resolvedPromises) => {
-        const articles = resolvedPromises[0];
-        res.status(200).send({ articles })
+        const firstArticleIndex = (p * limit-1) || 0;
+        const lastArticleIndex = (p * limit+1) || limit;
+        const limitedResponse = { articles: resolvedPromises[0].slice(firstArticleIndex, lastArticleIndex) }
+        limitedResponse.total_count = resolvedPromises[0].length;
+        res.status(200).send(limitedResponse)
     })
     .catch(next)
 }

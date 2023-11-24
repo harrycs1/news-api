@@ -53,7 +53,7 @@ describe('/api/articles', () => {
         .get('/api/articles')
         .expect(200)
         .then(({ body }) => {
-            expect(body.articles.length).toBe(5)
+            expect(body.articles.length).toBe(10)
             body.articles.forEach((article) => {
                 expect(article).toMatchObject({
                     article_id: expect.any(Number),
@@ -203,6 +203,80 @@ describe('/api/articles', () => {
           .expect(400)
           .then((response) => {
             expect(response.body.msg).toBe("Invalid order query");
+          });
+    });
+
+    test('GET:200 the number of responses can be limited with the limit query', () => {
+        return request(app)
+        .get('/api/articles?limit=3')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles.length).toBe(3);
+        })
+    });
+
+    test('GET:200 the number of responses is 10 by default if given no limit query', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles.length).toBe(10);
+        })
+    });
+
+    test('GET:400 responds with an error if the limit query is invalid', () => {
+        return request(app)
+          .get('/api/articles?limit=banana')
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe("Invalid limit query");
+          });
+    });
+
+    test('GET:200 response has a total_count property for the total number of articles returned, discounting the limit query', () => {
+        return request(app)
+        .get('/api/articles?limit=2')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.total_count).toBe(13);
+        })
+    });
+
+    test('GET:200 page number can be specified with the p query', () => {
+        return request(app)
+        .get('/api/articles?limit=2&p=2')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles.length).toBe(2);
+            expect(body.articles).toMatchObject([{
+                article_id: 12,
+                author: 'butter_bridge',
+                title: 'Moustache',
+                topic: 'mitch',
+                created_at: expect.any(String),
+                votes: 0,
+                article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                comment_count: '0'
+              },
+              {
+                article_id: 13,
+                author: 'butter_bridge',
+                title: 'Another article about Mitch',
+                topic: 'mitch',
+                created_at: expect.any(String),
+                votes: 0,
+                article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+                comment_count: '0'
+              }])
+        })
+    });
+
+    test('GET:400 responds with an error if the p query is invalid', () => {
+        return request(app)
+          .get('/api/articles?p=banana')
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe("Invalid page query");
           });
     });
 

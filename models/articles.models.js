@@ -42,7 +42,7 @@ exports.selectArticles = (topic, sort_by = "created_at", order = "desc") => {
                             article_img_url, 
                             COUNT(comments.article_id) AS comment_count
                         FROM 
-                            articles JOIN comments
+                            articles LEFT JOIN comments
                         ON 
                             articles.article_id = comments.article_id`
 

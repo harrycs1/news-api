@@ -629,7 +629,7 @@ describe('/api/articles', () => {
                   .send(newComment)
                   .expect(404)
                   .then(({ body }) => {
-                    expect(body.msg).toBe('User does not exist');
+                    expect(body.msg).toBe('Username does not exist');
                   });
             });
         })

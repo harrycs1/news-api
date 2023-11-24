@@ -1,5 +1,6 @@
 const { checkArticleExists } = require("../models/articles.models");
 const { selectCommentsByArticleId, insertComment, checkUserExists, checkCommentExists, removeComment, amendComment } = require("../models/comments.models");
+const { selectUserByUsername } = require("../models/users.models");
 
 exports.getCommentsByArticleId = (req, res, next) => {
     const { article_id } = req.params;
@@ -16,7 +17,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.postComment = (req, res, next) => {
     const newComment = req.body;
     const { article_id } = req.params;
-    const articlePromises = [checkArticleExists(article_id), checkUserExists(newComment.username), insertComment(newComment, article_id)];
+    const articlePromises = [checkArticleExists(article_id), selectUserByUsername(newComment.username), insertComment(newComment, article_id)];
 
     Promise.all(articlePromises)
     .then((resolvedPromises) => {

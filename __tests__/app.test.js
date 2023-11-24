@@ -204,7 +204,7 @@ describe('/api/articles', () => {
           .then((response) => {
             expect(response.body.msg).toBe("Invalid order query");
           });
-      });
+    });
 
     describe('api/articles/:article_id', () => {
         test('GET:200 sends an article object to the user with the correct article_id', () => {
@@ -331,6 +331,87 @@ describe('/api/articles', () => {
               .then(({ body }) => {
                 expect(body.msg).toBe('Bad request');
               });
+        });
+
+        test('POST:201 inserts a new post into the db and sends the new post to the client', () => {
+            const newPost = {
+                author: "rogersop",
+                title: "test post",
+                body: "test body",
+                topic: "mitch",
+                article_img_url: "test.img"
+            }
+            
+            return request(app)
+            .post('/api/articles')
+            .send(newPost)
+            .expect(201)
+            .then(({ body }) => {
+                expect(body).toMatchObject({
+                    author: "rogersop",
+                    title: "test post",
+                    body: "test body",
+                    topic: "mitch",
+                    article_img_url: "test.img",
+                    created_at: expect.any(String),
+                    article_id: 14,
+                    votes: 0,
+                    comment_count: "0"
+                })
+            })
+        });
+
+        test('POST:404 sends an appropriate status and error message when provided with a non-existent username', () => {
+            const newPost = {
+                author: "harry",
+                title: "test post",
+                body: "test body",
+                topic: "mitch",
+                article_img_url: "test.img"
+            }
+            
+            return request(app)
+            .post('/api/articles')
+            .send(newPost)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Username does not exist")
+            })
+        });
+
+        test('POST:404 sends an appropriate status and error message when provided with a non-existent topic', () => {
+            const newPost = {
+                author: "rogersop",
+                title: "test post",
+                body: "test body",
+                topic: "test",
+                article_img_url: "test.img"
+            }
+            
+            return request(app)
+            .post('/api/articles')
+            .send(newPost)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Topic does not exist")
+            })
+        });
+
+        test('POST:400 sends an appropriate status and error message when provided with an incomplete article (no body)', () => {
+            const newPost = {
+                author: "rogersop",
+                title: "test post",
+                topic: "mitch",
+                article_img_url: "test.img"
+            }
+            
+            return request(app)
+            .post('/api/articles')
+            .send(newPost)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad request")
+            })
         });
 
         describe('/api/articles/:article_id/comments', () => {

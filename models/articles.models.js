@@ -20,7 +20,8 @@ exports.selectArticleById = (article_id) => {
                         GROUP BY 
                             articles.article_id`;
 
-    return db.query(queryStr, [article_id])
+    return db
+    .query(queryStr, [article_id])
     .then(({ rows }) => {
         if (!rows.length) {
             return Promise.reject({ status: 404, msg: "Article does not exist"})
@@ -69,7 +70,8 @@ exports.selectArticles = (topic, sort_by = "created_at", order = "desc") => {
         return Promise.reject({ status: 400, msg: 'Invalid order query'});
     }
 
-    return db.query(queryStr, queryValues)
+    return db
+    .query(queryStr, queryValues)
     .then(({ rows }) => {
         return rows
     })
@@ -95,6 +97,47 @@ exports.amendArticleVotes = (inc_votes, article_id) => {
     
     return db
     .query(queryStr, [inc_votes, article_id])
+    .then(({ rows }) => {
+        return rows[0]
+    })
+}
+
+exports.insertArticle = (newArticle) => {
+    const { author, title, body, topic, article_img_url } = newArticle;
+    const queryValues = [author, title, body, topic, article_img_url];
+
+    const queryStr =    `WITH new_article AS (
+                            INSERT INTO articles
+                                (author, title, body, topic, article_img_url)
+                            VALUES
+                                ($1, $2, $3, $4, $5)
+                            RETURNING *)
+                        SELECT 
+                            new_article.article_id,
+                            new_article.author,
+                            new_article.title,
+                            new_article.body,
+                            new_article.topic,
+                            new_article.article_img_url,
+                            new_article.created_at,
+                            new_article.votes,
+                            COUNT(comments.comment_id) as comment_count
+                        FROM
+                            new_article LEFT JOIN comments
+                        ON 
+                            new_article.article_id = comments.article_id
+                        GROUP BY 
+                        new_article.article_id, 
+                        new_article.author, 
+                        new_article.title, 
+                        new_article.body, 
+                        new_article.topic, 
+                        new_article.article_img_url, 
+                        new_article.created_at, 
+                        new_article.votes`
+
+    return db
+    .query(queryStr, queryValues)
     .then(({ rows }) => {
         return rows[0]
     })

@@ -1,22 +1,25 @@
 const db = require('../db/connection');
 
 exports.selectCommentsByArticleId = (article_id, limit = 10, p) => {
-    const queryStr =    `SELECT * FROM comments 
+    let queryStr =    `SELECT * FROM comments 
                         WHERE article_id = $1 
                         ORDER BY created_at 
-                        DESC
-                        LIMIT $2
-                        OFFSET $3`
+                        DESC`
 
-    const page = (p-1) * limit || 0;
-    const queryValues = [article_id, limit, page]
+    const page = (p-1) * limit;
+    const queryValues = [article_id, limit]
 
     if (!Number.isInteger(+limit)) {
         return Promise.reject({status: 400, msg: "Invalid limit query"})
+    } else {
+        queryStr += ` LIMIT $${queryValues.length}`
     }
 
     if (p && !Number.isInteger(+p)) {
         return Promise.reject({status: 400, msg: "Invalid page query"})
+    } else if (p) {
+        queryValues.push(page)
+        queryStr += ` OFFSET $${queryValues.length}`
     }
 
     return db

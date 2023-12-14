@@ -58,7 +58,7 @@ exports.selectArticles = (topic, sort_by = "created_at", order = "desc") => {
     const allowedSorts = ['article_id', 'author', 'title', 'topic', 'created_at', 'votes', 'comment_count']
 
     if (sort_by && allowedSorts.includes(sort_by)) {
-        queryStr += ` ORDER BY articles.${sort_by}`
+        queryStr += ` ORDER BY ${sort_by}`
     } else {
         return Promise.reject({status: 400, msg: "Invalid sort query"})
     }

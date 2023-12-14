@@ -159,6 +159,15 @@ describe('/api/articles', () => {
                 expect(body.articles).toBeSortedBy('votes', {descending: true})
             })
         });
+
+        test('GET:200 articles can be sorted by comment_count using the sort_by query', () => {
+            return request(app)
+            .get('/api/articles?sort_by=comment_count')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy(+'comment_count', {descending: true})
+            })
+        });
     });
 
     test('GET:200 articles can be sorted in ascending order with the order query', () => {

@@ -3,7 +3,7 @@
 ## Summary
 The aim of this project was to mimic the backend service of an online news provider. The app serves news articles and user comments to the client.
 
-**[Here's a link to the hosted application!](https://news-api-ndji.onrender.com)**
+**[Here's a link to the hosted application!](https://news-api-ndji.onrender.com/api)**
 
 ## How to Clone
 Clone the repository using `git clone https://github.com/harrycs1/news-api`. The MVC framework has been used. Controllers and models are found in their respective folders.

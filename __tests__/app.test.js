@@ -33,7 +33,54 @@ describe('/api/topics', () => {
                 })
             })
         })
-    })
+    });
+
+    test('POST:201 inserts a new topic into the db and sends that topic to the client', () => {
+        const newTopic = {
+            "slug" : "topic name test",
+            "description": "topic description test"
+        }
+        
+        return request(app)
+        .post('/api/topics')
+        .send(newTopic)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body).toMatchObject({
+                "slug" : "topic name test",
+                "description": "topic description test"
+            })
+        })
+    });
+
+    test('POST:400 responds with appropriate status and error if topic already exists', () => {
+        const newTopic = {
+            "slug" : "cats",
+            "description": "topic description test"
+        }
+        
+        return request(app)
+        .post('/api/topics')
+        .send(newTopic)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Topic already exists")
+        })  
+    });
+
+    test('POST:400 sends an appropriate status and error message when provided with an incomplete article (no slug)', () => {
+        const newTopic = {
+            "description" : "new topic"
+        }
+        
+        return request(app)
+        .post('/api/topics')
+        .send(newTopic)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad request")
+        })  
+    });
 })
 
 describe('/api', () => {
@@ -638,7 +685,67 @@ describe('/api/articles', () => {
                   .send(newComment)
                   .expect(404)
                   .then(({ body }) => {
-                    expect(body.msg).toBe('User does not exist');
+                    expect(body.msg).toBe('Username does not exist');
+                  });
+            });
+
+            test('GET:200 limits the results when given a limit query', () => {
+                return request(app)
+                .get('/api/articles/1/comments?limit=5')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.comments.length).toBe(5);
+                })
+            });
+
+            test('GET:200 page number can be specified with a p query', () => {
+                return request(app)
+                .get('/api/articles/1/comments?limit=3&p=2')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.comments.length).toBe(3);
+                    expect(body.comments).toMatchObject([{
+                        comment_id: 13,
+                        body: 'Fruit pastilles',
+                        article_id: 1,
+                        author: 'icellusedkars',
+                        votes: 0,
+                        created_at: expect.any(String)
+                      },
+                      {
+                        comment_id: 7,
+                        body: 'Lobster pot',
+                        article_id: 1,
+                        author: 'icellusedkars',
+                        votes: 0,
+                        created_at: expect.any(String)
+                      },
+                      {
+                        comment_id: 8,
+                        body: 'Delicious crackerbreads',
+                        article_id: 1,
+                        author: 'icellusedkars',
+                        votes: 0,
+                        created_at: expect.any(String)
+                      }])
+                })
+            });
+
+            test('GET:400 responds with an error if the limit query is invalid', () => {
+                return request(app)
+                  .get('/api/articles/1/comments?limit=banana')
+                  .expect(400)
+                  .then((response) => {
+                    expect(response.body.msg).toBe("Invalid limit query");
+                  });
+            });
+
+            test('GET:400 responds with an error if the p query is invalid', () => {
+                return request(app)
+                  .get('/api/articles/1/comments?limit=3&p=banana')
+                  .expect(400)
+                  .then((response) => {
+                    expect(response.body.msg).toBe("Invalid page query");
                   });
             });
         })
